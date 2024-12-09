@@ -105,6 +105,62 @@ def logout():
         st.session_state.clear()
         st.success("Anda telah logout.")
 
+# Fungsi untuk mengubah tema dan background
+def change_theme():
+    st.subheader("Ganti Tema dan Background")
+    theme = st.selectbox("Pilih Tema", ["Default", "Dark Mode", "Money Theme"])
+    background_url = st.text_input("URL Background (opsional)")
+
+    if theme == "Dark Mode":
+        st.markdown(
+            """
+            <style>
+            body {
+                background-color: #181818;
+                color: #FFFFFF;
+            }
+            .main {
+                background-color: #181818;
+                color: #FFFFFF;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+    elif theme == "Money Theme":
+        st.markdown(
+            f"""
+            <style>
+            body {{
+                background: url('{background_url}') no-repeat center center fixed;
+                background-size: cover;
+            }}
+            .main {{
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+                padding: 20px;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            """
+            <style>
+            body {
+                background: linear-gradient(to right, #ff758c, #ff7eb3);
+            }
+            .main {
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+                padding: 20px;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
 # Inisialisasi data
 data = load_data()
 
@@ -113,23 +169,12 @@ st.markdown("""
     <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
         <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
     </div>
-    <style>
-        body {
-            background: url('path_to_animated_background.gif'); /* Ganti dengan path background animasi uang */
-            background-size: cover;
-        }
-        .main > div {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            padding: 20px;
-        }
-    </style>
 """, unsafe_allow_html=True)
 
 # Cek apakah pengguna sudah login
 if "username" in st.session_state:
     st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
-    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Ganti Tema", "Logout"])
     
     if menu == "Tambah Saldo":
         tambah_saldo()
@@ -139,6 +184,8 @@ if "username" in st.session_state:
         cek_saldo()
     elif menu == "Riwayat Transfer":
         cek_riwayat()
+    elif menu == "Ganti Tema":
+        change_theme()
     elif menu == "Logout":
         logout()
 else:
