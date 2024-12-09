@@ -48,7 +48,7 @@ def login():
             st.error("PIN salah!")
         else:
             st.session_state["username"] = username
-            st.success(f"Selamat datang!")
+            st.success(f"Selamat datang, {username}!")
 
 # Fungsi untuk menambah saldo
 def tambah_saldo():
@@ -69,7 +69,7 @@ def transfer():
     if st.button("Kirim"):
         if penerima not in data:
             st.error("Penerima tidak ditemukan!")
-        elif jumlah <= 0 or jumlah > data[st.session_state["username"]]["saldo"]:
+        elif jumlah <= 0 atau jumlah > data[st.session_state["username"]]["saldo"]:
             st.error("Saldo tidak cukup atau jumlah tidak valid!")
         elif data[st.session_state["username"]]["pin"] != pin:
             st.error("PIN salah!")
@@ -214,7 +214,7 @@ st.markdown("""
 
 # Nama pengguna di atas sidebar
 if "username" in st.session_state:
-    st.sidebar.subheader(f"Selamat datang!")
+    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
