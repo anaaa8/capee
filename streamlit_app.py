@@ -49,7 +49,6 @@ def login():
         else:
             st.session_state["username"] = username
             st.success(f"Selamat datang, {username}!")
-            st.experimental_rerun()  # Refresh aplikasi untuk menampilkan menu utama
 
 # Fungsi untuk menambah saldo
 def tambah_saldo():
@@ -101,30 +100,28 @@ def cek_riwayat():
 # Fungsi untuk logout
 def logout():
     st.subheader("Logout")
-    if st.button("Ya"):
+    confirm = st.radio("Apakah Anda yakin ingin logout?", ("Tidak", "Ya"))
+    if confirm == "Ya":
         st.session_state.clear()
         st.success("Anda telah logout.")
-    if st.button("Tidak"):
-        st.success("Batal logout.")
 
 # Inisialisasi data
 data = load_data()
 
-# Streamlit: Header
+# Streamlit: Header dengan latar belakang animasi uang
 st.markdown("""
     <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
         <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
     </div>
     <style>
         body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: url('path_to_animated_background.gif'); /* Ganti dengan path background animasi uang */
+            background-size: cover;
         }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .main > div {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
         }
     </style>
 """, unsafe_allow_html=True)
