@@ -240,4 +240,8 @@ if "username" in st.session_state:
         tambah_saldo()
     elif menu == "Transfer":
         transfer()
-    elif menu
+    elif menu == "Cek Saldo":
+        cek_saldo()
+    elif menu == "Riwayat Transfer":
+        cek_riwayat()
+    elif menu == "Ganti Tema
