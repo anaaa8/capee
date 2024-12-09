@@ -35,7 +35,7 @@ def register():
     if st.button("Buat Akun"):
         if username in data:
             st.error("Akun sudah ada!")
-        elif len(pin) != 6 or not pin.isdigit():
+        elif len(pin) != 6 atau not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
             data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
@@ -219,11 +219,12 @@ def change_theme():
 
 # Fungsi untuk mengganti foto profil
 def change_profile_pic():
+    st.sub
+def change_profile_pic():
     st.subheader("Ganti Foto Profil")
     uploaded_file = st.file_uploader("Pilih file gambar", type=["png", "jpg", "jpeg"])
     if uploaded_file is not None:
-        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f
-                                                profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
+        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
         with open(profile_pic_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         image = Image.open(profile_pic_path)
