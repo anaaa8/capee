@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
 
 # File untuk menyimpan data
 DATA_FILE = "dompet_digital.json"
@@ -35,7 +35,7 @@ def register():
     if st.button("Buat Akun"):
         if username in data:
             st.error("Akun sudah ada!")
-        elif len(pin) != 6 or not pin.isdigit():
+        elif len(pin) != 6 atau not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
             data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
@@ -75,7 +75,7 @@ def transfer():
     if st.button("Kirim"):
         if penerima not in data:
             st.error("Penerima tidak ditemukan!")
-        elif jumlah <= 0 or jumlah > data[st.session_state["username"]]["saldo"]:
+        elif jumlah <= 0 atau jumlah > data[st.session_state["username"]]["saldo"]:
             st.error("Saldo tidak cukup atau jumlah tidak valid!")
         elif data[st.session_state["username"]]["pin"] != pin:
             st.error("PIN salah!")
@@ -219,8 +219,6 @@ def change_theme():
 
 # Fungsi untuk mengganti foto profil
 def change_profile_pic():
-    st.sub
-def change_profile_pic():
     st.subheader("Ganti Foto Profil")
     uploaded_file = st.file_uploader("Pilih file gambar", type=["png", "jpg", "jpeg"])
     if uploaded_file is not None:
@@ -231,7 +229,7 @@ def change_profile_pic():
         image = image.resize((200, 200))
         image = image.convert("RGBA")
         circle_image = Image.new("L", (200, 200), 0)
-        Image.Draw.Draw(circle_image).ellipse((0, 0, 200, 200), fill=255)
+        ImageDraw.Draw(circle_image).ellipse((0, 0, 200, 200), fill=255)
         circular_image = Image.new("RGBA", (200, 200))
         circular_image.paste(image, (0, 0), mask=circle_image)
         circular_image.save(profile_pic_path)
@@ -245,7 +243,8 @@ data = load_data()
 # Streamlit: Header dengan latar belakang animasi uang
 st.markdown("""
     <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
-        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
+        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</
+                <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
     </div>
     <style>
         body {
@@ -271,7 +270,8 @@ if "username" in st.session_state:
 
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
-        with st.expander("Pengaturan"):
+        if st.button("Pengaturan"):
+            st.markdown("### Pengaturan")
             change_theme()
             change_profile_pic()
         with st.expander("Bantuan"):
@@ -283,7 +283,7 @@ if "username" in st.session_state:
         if st.button("Ganti Password"):
             new_pin = st.text_input("PIN Baru (6 digit)", type="password")
             if st.button("Simpan PIN Baru"):
-                if len(new_pin) != 6 or not new_pin.isdigit():
+                if len(new_pin) != 6 atau not new_pin.isdigit():
                     st.error("PIN harus 6 digit angka!")
                 else:
                     data[st.session_state['username']]["pin"] = new_pin
