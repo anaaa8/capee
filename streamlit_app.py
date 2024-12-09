@@ -212,11 +212,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Nama pengguna di atas sidebar
-if "username" in st.session_state:
-    st.sidebar.markdown(f"**Nama Pengguna: {st.session_state['username']}**")
-    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
-
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
         st.write("Nama Pengguna: ", st.session_state['username'])
