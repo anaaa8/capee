@@ -225,7 +225,7 @@ if "username" in st.session_state:
             st.write("Bantuan akan ditambahkan nanti.")
         if st.button("Ganti Password"):
             new_pin = st.text_input("PIN Baru (6 digit)", type="password")
-        if st.button("Simpan PIN Baru"):
+            if st.button("Simpan PIN Baru"):
         if len(new_pin) != 6 or not new_pin.isdigit():
             st.error("PIN harus 6 digit angka!")
             else:
