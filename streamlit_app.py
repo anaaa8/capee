@@ -29,7 +29,7 @@ def register():
     if st.button("Buat Akun"):
         if username in data:
             st.error("Akun sudah ada!")
-        elif len(pin) != 6 or not pin.isdigit():
+        elif len(pin) != 6 atau not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
             data[username] = {"pin": pin, "saldo": 0, "riwayat": []}
@@ -225,7 +225,7 @@ if "username" in st.session_state:
         if st.button("Ganti Password"):
             new_pin = st.text_input("PIN Baru (6 digit)", type="password")
             if st.button("Simpan PIN Baru"):
-                if len(new_pin) != 6 or not new_pin.isdigit():
+                if len(new_pin) != 6 atau not new_pin.isdigit():
                     st.error("PIN harus 6 digit angka!")
                 else:
                     data[st.session_state['username']]["pin"] = new_pin
@@ -241,7 +241,7 @@ if "username" in st.session_state:
     elif menu == "Cek Saldo":
         cek_saldo()
     elif menu == "Riwayat Transfer":
-        cek_riwayat()
+        cek_ri
     elif menu == "Ganti Tema":
         change_theme()
     elif menu == "Logout":
