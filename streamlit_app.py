@@ -35,7 +35,7 @@ def register():
     if st.button("Buat Akun"):
         if username in data:
             st.error("Akun sudah ada!")
-        elif len(pin) != 6 or not pin.isdigit():
+        elif len(pin) != 6 atau not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
             data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
@@ -128,6 +128,10 @@ def change_theme():
                     background-color: #181818;
                     color: #FFFFFF;
                 }
+                .sidebar .sidebar-content {
+                    background-color: #181818;
+                    color: #FFFFFF;
+                }
                 </style>
                 """,
                 unsafe_allow_html=True,
@@ -141,6 +145,10 @@ def change_theme():
                     color: #000000;
                 }
                 .main {
+                    background-color: #FFFFFF;
+                    color: #000000;
+                }
+                .sidebar .sidebar-content {
                     background-color: #FFFFFF;
                     color: #000000;
                 }
@@ -160,6 +168,10 @@ def change_theme():
                     background-color: #e0f7fa;
                     color: #00796b;
                 }
+                .sidebar .sidebar-content {
+                    background-color: #e0f7fa;
+                    color: #00796b;
+                }
                 </style>
                 """,
                 unsafe_allow_html=True,
@@ -173,6 +185,10 @@ def change_theme():
                     color: #4caf50;
                 }
                 .main {
+                    background-color: #d0f0c0;
+                    color: #4caf50;
+                }
+                .sidebar .sidebar-content {
                     background-color: #d0f0c0;
                     color: #4caf50;
                 }
@@ -192,6 +208,10 @@ def change_theme():
                     border-radius: 10px;
                     padding: 20px;
                 }
+                .sidebar .sidebar-content {
+                    background: linear-gradient(to right, #ff758c, #ff7eb3);
+                    color: #FFFFFF;
+                }
                 </style>
                 """,
                 unsafe_allow_html=True,
@@ -202,7 +222,8 @@ def change_profile_pic():
     st.subheader("Ganti Foto Profil")
     uploaded_file = st.file_uploader("Pilih file gambar", type=["png", "jpg", "jpeg"])
     if uploaded_file is not None:
-        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
+        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f
+                                                profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
         with open(profile_pic_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         image = Image.open(profile_pic_path)
@@ -240,14 +261,13 @@ st.markdown("""
 
 # Nama pengguna di atas sidebar
 if "username" in st.session_state:
-    st.sidebar.subheader(f"Selamat datang
-        st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
+    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
     # Menampilkan foto profil
     profile_pic_path = data[st.session_state['username']].get("profile_pic", "")
     if profile_pic_path and os.path.exists(profile_pic_path):
         st.sidebar.image(profile_pic_path, caption="Foto Profil", use_column_width=True, output_format="PNG", clamp=True)
-    
+
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
         with st.expander("Pengaturan"):
@@ -288,5 +308,3 @@ else:
         login()
     elif menu == "Registrasi":
         register()
-
-    
