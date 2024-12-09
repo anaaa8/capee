@@ -48,7 +48,7 @@ def login():
             st.error("PIN salah!")
         else:
             st.session_state["username"] = username
-            st.success(f"Selamat datang!")
+            st.success(f"Selamat datang, {username}!")
 
 # Fungsi untuk menambah saldo
 def tambah_saldo():
@@ -214,7 +214,8 @@ st.markdown("""
 
 # Nama pengguna di atas sidebar
 if "username" in st.session_state:
-    st.sidebar.subheader(f"Selamat datang!")
+    st.sidebar.markdown(f"**Nama Pengguna: {st.session_state['username']}**")
+    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
@@ -226,13 +227,10 @@ if "username" in st.session_state:
         if st.button("Ganti Password"):
             new_pin = st.text_input("PIN Baru (6 digit)", type="password")
             if st.button("Simpan PIN Baru"):
-        if len(new_pin) != 6 or not new_pin.isdigit():
-            st.error("PIN harus 6 digit angka!")
-            else:
-                data[st.session_state['username']]["pin"] = new_pin
-                save_data(data)
-                st.success("PIN berhasil diganti!")
-
+                if len(new_pin) != 6 or not new_pin.isdigit():
+                    st.error("PIN harus 6 digit angka!")
+                else:
+                    data[st.session_state['username']]["pin"] = new_pin
     menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Ganti Tema", "Logout"])
     
     if menu == "Tambah Saldo":
