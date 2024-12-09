@@ -35,7 +35,7 @@ def register():
     if st.button("Buat Akun"):
         if username in data:
             st.error("Akun sudah ada!")
-        elif len(pin) != 6 atau not pin.isdigit():
+        elif len(pin) != 6 or not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
             data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
