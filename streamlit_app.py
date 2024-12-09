@@ -75,7 +75,7 @@ def transfer():
     if st.button("Kirim"):
         if penerima not in data:
             st.error("Penerima tidak ditemukan!")
-        elif jumlah <= 0 or jumlah > data[st.session_state["username"]]["saldo"]:
+        elif jumlah <= 0 atau jumlah > data[st.session_state["username"]]["saldo"]:
             st.error("Saldo tidak cukup atau jumlah tidak valid!")
         elif data[st.session_state["username"]]["pin"] != pin:
             st.error("PIN salah!")
@@ -115,7 +115,7 @@ def logout():
 def change_theme():
     st.subheader("Ganti Tema dan Background")
     theme = st.selectbox("Pilih Tema", ["Default", "Dark Mode", "Light Mode", "Blue Theme", "Green Theme"])
-    if st.button("Terapkan"):
+    if st.button("Terapkan Tema"):
         if theme == "Dark Mode":
             st.markdown(
                 """
@@ -205,6 +205,14 @@ def change_profile_pic():
         profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
         with open(profile_pic_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
+        image = Image.open(profile_pic_path)
+        image = image.resize((200, 200))
+        image = image.convert("RGBA")
+        circle_image = Image.new("L", (200, 200), 0)
+        Image.Draw.Draw(circle_image).ellipse((0, 0, 200, 200), fill=255)
+        circular_image = Image.new("RGBA", (200, 200))
+        circular_image.paste(image, (0, 0), mask=circle_image)
+        circular_image.save(profile_pic_path)
         data[st.session_state['username']]["profile_pic"] = profile_pic_path
         save_data(data)
         st.success("Foto profil berhasil diubah!")
@@ -232,51 +240,53 @@ st.markdown("""
 
 # Nama pengguna di atas sidebar
 if "username" in st.session_state:
-    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
+    st.sidebar.subheader(f"Selamat datang
+        st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
     # Menampilkan foto profil
     profile_pic_path = data[st.session_state['username']].get("profile_pic", "")
     if profile_pic_path and os.path.exists(profile_pic_path):
         st.sidebar.image(profile_pic_path, caption="Foto Profil", use_column_width=True, output_format="PNG", clamp=True)
     
-   # Menu profil dengan pengaturan, bantuan, dan ganti password
-with st.sidebar.expander("🔧 Profil"):
-    if st.button("Pengaturan"):
-        with st.expander("Ganti Tema dan Foto Profil"):
+    # Menu profil dengan pengaturan, bantuan, dan ganti password
+    with st.sidebar.expander("🔧 Profil"):
+        with st.expander("Pengaturan"):
             change_theme()
             change_profile_pic()
-    with st.expander("Bantuan"):
-        st.write("Silakan pilih opsi berikut jika Anda membutuhkan bantuan:")
-        if st.button("Saran"):
-            st.write("Terima kasih atas saran Anda!")
-        if st.button("Ajukan"):
-            st.write("Silakan ajukan pertanyaan Anda!")
-    if st.button("Ganti Password"):
-        new_pin = st.text_input("PIN Baru (6 digit)", type="password")
-        if st.button("Simpan PIN Baru"):
-            if len(new_pin) != 6 or not new_pin.isdigit():
-                st.error("PIN harus 6 digit angka!")
-            else:
-                data[st.session_state['username']]["pin"] = new_pin
-                save_data(data)
-                st.success("PIN berhasil diganti!")
+        with st.expander("Bantuan"):
+            st.write("Silakan pilih opsi berikut jika Anda membutuhkan bantuan:")
+            if st.button("Saran"):
+                st.write("Terima kasih atas saran Anda!")
+            if st.button("Ajukan"):
+                st.write("Silakan ajukan pertanyaan Anda!")
+        if st.button("Ganti Password"):
+            new_pin = st.text_input("PIN Baru (6 digit)", type="password")
+            if st.button("Simpan PIN Baru"):
+                if len(new_pin) != 6 atau not new_pin.isdigit():
+                    st.error("PIN harus 6 digit angka!")
+                else:
+                    data[st.session_state['username']]["pin"] = new_pin
+                    save_data(data)
+                    st.success("PIN berhasil diganti!")
 
-menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
-
-if menu == "Tambah Saldo":
-    tambah_saldo()
-elif menu == "Transfer":
-    transfer()
-elif menu == "Cek Saldo":
-    cek_saldo()
-elif menu == "Riwayat Transfer":
-    cek_riwayat()
-elif menu == "Logout":
-    logout()
+    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+    
+    if menu == "Tambah Saldo":
+        tambah_saldo()
+    elif menu == "Transfer":
+        transfer()
+    elif menu == "Cek Saldo":
+        cek_saldo()
+    elif menu == "Riwayat Transfer":
+        cek_riwayat()
+    elif menu == "Logout":
+        logout()
 else:
     menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
-
+    
     if menu == "Login":
         login()
     elif menu == "Registrasi":
         register()
+
+    
