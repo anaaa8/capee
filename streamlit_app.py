@@ -1,8 +1,6 @@
 import streamlit as st
 import json
 import os
-import random
-import string
 
 # File untuk menyimpan data
 DATA_FILE = "dompet_digital.json"
@@ -23,15 +21,10 @@ def save_data(data):
 def format_rupiah(amount):
     return f"Rp {amount:,.0f}".replace(",", ".")
 
-# Fungsi untuk menghasilkan nama pengguna otomatis
-def generate_username():
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-
 # Fungsi untuk registrasi akun
 def register():
     st.subheader("📝 Registrasi Akun")
-    username = generate_username()
-    st.write(f"Nama Pengguna Anda: {username}")
+    username = st.text_input("Nama Pengguna")
     pin = st.text_input("Buat PIN (6 digit)", type="password")
     if st.button("Buat Akun"):
         if username in data:
@@ -98,60 +91,4 @@ def cek_saldo():
 # Fungsi untuk cek riwayat transfer
 def cek_riwayat():
     st.subheader("🧾 Riwayat Transfer")
-    riwayat = data[st.session_state["username"]]["riwayat"]
-    if riwayat:
-        for item in riwayat:
-            st.write(f"- {item}")
-    else:
-        st.info("Belum ada riwayat transaksi.")
-
-# Fungsi untuk logout
-def logout():
-    st.session_state.clear()
-    st.success("Anda telah logout.")
-    st.experimental_rerun()  # Refresh aplikasi untuk kembali ke menu login
-
-# Inisialisasi data
-data = load_data()
-
-# Streamlit: Header
-st.markdown("""
-    <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
-        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
-    </div>
-    <style>
-        body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-# Cek apakah pengguna sudah login
-if "username" in st.session_state:
-    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
-    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
-    
-    if menu == "Tambah Saldo":
-        tambah_saldo()
-    elif menu == "Transfer":
-        transfer()
-    elif menu == "Cek Saldo":
-        cek_saldo()
-    elif menu == "Riwayat Transfer":
-        cek_riwayat()
-    elif menu == "Logout":
-        logout()
-else:
-    menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
-    
-    if menu == "Login":
-        login()
-    elif menu == "Registrasi":
-        register()
+    riwayat = data[st.session_state["username"]]
