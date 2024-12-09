@@ -75,7 +75,7 @@ def transfer():
     if st.button("Kirim"):
         if penerima not in data:
             st.error("Penerima tidak ditemukan!")
-        elif jumlah <= 0 atau jumlah > data[st.session_state["username"]]["saldo"]:
+        elif jumlah <= 0 or jumlah > data[st.session_state["username"]]["saldo"]:
             st.error("Saldo tidak cukup atau jumlah tidak valid!")
         elif data[st.session_state["username"]]["pin"] != pin:
             st.error("PIN salah!")
