@@ -105,6 +105,92 @@ def logout():
         st.session_state.clear()
         st.success("Anda telah logout.")
 
+# Fungsi untuk mengubah tema dan background
+def change_theme():
+    st.subheader("Ganti Tema dan Background")
+    theme = st.selectbox("Pilih Tema", ["Default", "Dark Mode", "Light Mode", "Blue Theme", "Green Theme"])
+    if st.button("Terapkan"):
+        if theme == "Dark Mode":
+            st.markdown(
+                """
+                <style>
+                body {
+                    background-color: #181818;
+                    color: #FFFFFF;
+                }
+                .main {
+                    background-color: #181818;
+                    color: #FFFFFF;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+        elif theme == "Light Mode":
+            st.markdown(
+                """
+                <style>
+                body {
+                    background-color: #FFFFFF;
+                    color: #000000;
+                }
+                .main {
+                    background-color: #FFFFFF;
+                    color: #000000;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+        elif theme == "Blue Theme":
+            st.markdown(
+                """
+                <style>
+                body {
+                    background-color: #e0f7fa;
+                    color: #00796b;
+                }
+                .main {
+                    background-color: #e0f7fa;
+                    color: #00796b;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+        elif theme == "Green Theme":
+            st.markdown(
+                """
+                <style>
+                body {
+                    background-color: #d0f0c0;
+                    color: #4caf50;
+                }
+                .main {
+                    background-color: #d0f0c0;
+                    color: #4caf50;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                """
+                <style>
+                body {
+                    background: linear-gradient(to right, #ff758c, #ff7eb3);
+                }
+                .main {
+                    background: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    padding: 20px;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+
 # Inisialisasi data
 data = load_data()
 
@@ -126,25 +212,32 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Cek apakah pengguna sudah login
+# Nama pengguna di atas sidebar
 if "username" in st.session_state:
+    st.sidebar.markdown(f"**Nama Pengguna: {st.session_state['username']}**")
     st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
-    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+
+    # Menu profil dengan pengaturan, bantuan, dan ganti password
+    with st.sidebar.expander("🔧 Profil"):
+        st.write("Nama Pengguna: ", st.session_state['username'])
+        if st.button("Pengaturan"):
+            st.write("Pengaturan akan ditambahkan nanti.")
+        if st.button("Bantuan"):
+            st.write("Bantuan akan ditambahkan nanti.")
+        if st.button("Ganti Password"):
+            new_pin = st.text_input("PIN Baru (6 digit)", type="password")
+            if st.button("Simpan PIN Baru"):
+                if len(new_pin) != 6 or not new_pin.isdigit():
+                    st.error("PIN harus 6 digit angka!")
+                else:
+                    data[st.session_state['username']]["pin"] = new_pin
+                    save_data(data)
+                    st.success("PIN berhasil diganti!")
+
+    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Ganti Tema", "Logout"])
     
     if menu == "Tambah Saldo":
         tambah_saldo()
     elif menu == "Transfer":
         transfer()
-    elif menu == "Cek Saldo":
-        cek_saldo()
-    elif menu == "Riwayat Transfer":
-        cek_riwayat()
-    elif menu == "Logout":
-        logout()
-else:
-    menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
-    
-    if menu == "Login":
-        login()
-    elif menu == "Registrasi":
-        register()
+    elif menu
