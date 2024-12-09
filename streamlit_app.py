@@ -102,7 +102,6 @@ def cek_riwayat():
 def logout():
     st.session_state.clear()
     st.success("Anda telah logout.")
-    st.experimental_rerun()  # Refresh aplikasi untuk kembali ke menu login
 
 # Inisialisasi data
 data = load_data()
