@@ -94,4 +94,60 @@ def cek_riwayat():
     riwayat = data[st.session_state["username"]]["riwayat"]
     if riwayat:
         for item in riwayat:
-            st
+            st.write(f"- {item}")
+    else:
+        st.info("Belum ada riwayat transaksi.")
+
+# Fungsi untuk logout
+def logout():
+    st.subheader("Logout")
+    if st.button("Ya"):
+        st.session_state.clear()
+        st.success("Anda telah logout.")
+    if st.button("Tidak"):
+        st.success("Batal logout.")
+
+# Inisialisasi data
+data = load_data()
+
+# Streamlit: Header
+st.markdown("""
+    <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
+        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
+    </div>
+    <style>
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Cek apakah pengguna sudah login
+if "username" in st.session_state:
+    st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
+    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+    
+    if menu == "Tambah Saldo":
+        tambah_saldo()
+    elif menu == "Transfer":
+        transfer()
+    elif menu == "Cek Saldo":
+        cek_saldo()
+    elif menu == "Riwayat Transfer":
+        cek_riwayat()
+    elif menu == "Logout":
+        logout()
+else:
+    menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
+    
+    if menu == "Login":
+        login()
+    elif menu == "Registrasi":
+        register()
