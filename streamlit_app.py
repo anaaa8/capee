@@ -244,4 +244,14 @@ if "username" in st.session_state:
         cek_saldo()
     elif menu == "Riwayat Transfer":
         cek_riwayat()
-    elif menu == "Ganti Tema
+    elif menu == "Ganti Tema":
+        change_theme()
+    elif menu == "Logout":
+        logout()
+else:
+    menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
+    
+    if menu == "Login":
+        login()
+    elif menu == "Registrasi":
+        register()
