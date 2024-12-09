@@ -1,11 +1,9 @@
 import streamlit as st
 import json
 import os
-from PIL import Image, ImageDraw
 
 # File untuk menyimpan data
 DATA_FILE = "dompet_digital.json"
-PROFILE_PICS_DIR = "profile_pics"
 
 # Fungsi untuk memuat data dari file
 def load_data():
@@ -18,10 +16,6 @@ def load_data():
 def save_data(data):
     with open(DATA_FILE, "w") as file:
         json.dump(data, file, indent=4)
-
-# Fungsi untuk membuat direktori foto profil jika belum ada
-if not os.path.exists(PROFILE_PICS_DIR):
-    os.makedirs(PROFILE_PICS_DIR)
 
 # Fungsi untuk format Rupiah
 def format_rupiah(amount):
@@ -38,7 +32,7 @@ def register():
         elif len(pin) != 6 or not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
-            data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
+            data[username] = {"pin": pin, "saldo": 0, "riwayat": []}
             save_data(data)
             st.success("Akun berhasil dibuat!")
 
@@ -75,7 +69,7 @@ def transfer():
     if st.button("Kirim"):
         if penerima not in data:
             st.error("Penerima tidak ditemukan!")
-        elif jumlah <= 0 or jumlah > data[st.session_state["username"]]["saldo"]:
+        elif jumlah <= 0 atau jumlah > data[st.session_state["username"]]["saldo"]:
             st.error("Saldo tidak cukup atau jumlah tidak valid!")
         elif data[st.session_state["username"]]["pin"] != pin:
             st.error("PIN salah!")
@@ -115,7 +109,7 @@ def logout():
 def change_theme():
     st.subheader("Ganti Tema dan Background")
     theme = st.selectbox("Pilih Tema", ["Default", "Dark Mode", "Light Mode", "Blue Theme", "Green Theme"])
-    if st.button("Terapkan Tema"):
+    if st.button("Terapkan"):
         if theme == "Dark Mode":
             st.markdown(
                 """
@@ -125,10 +119,6 @@ def change_theme():
                     color: #FFFFFF;
                 }
                 .main {
-                    background-color: #181818;
-                    color: #FFFFFF;
-                }
-                .sidebar .sidebar-content {
                     background-color: #181818;
                     color: #FFFFFF;
                 }
@@ -148,10 +138,6 @@ def change_theme():
                     background-color: #FFFFFF;
                     color: #000000;
                 }
-                .sidebar .sidebar-content {
-                    background-color: #FFFFFF;
-                    color: #000000;
-                }
                 </style>
                 """,
                 unsafe_allow_html=True,
@@ -165,10 +151,6 @@ def change_theme():
                     color: #00796b;
                 }
                 .main {
-                    background-color: #e0f7fa;
-                    color: #00796b;
-                }
-                .sidebar .sidebar-content {
                     background-color: #e0f7fa;
                     color: #00796b;
                 }
@@ -188,10 +170,6 @@ def change_theme():
                     background-color: #d0f0c0;
                     color: #4caf50;
                 }
-                .sidebar .sidebar-content {
-                    background-color: #d0f0c0;
-                    color: #4caf50;
-                }
                 </style>
                 """,
                 unsafe_allow_html=True,
@@ -208,34 +186,10 @@ def change_theme():
                     border-radius: 10px;
                     padding: 20px;
                 }
-                .sidebar .sidebar-content {
-                    background: linear-gradient(to right, #ff758c, #ff7eb3);
-                    color: #FFFFFF;
-                }
                 </style>
                 """,
                 unsafe_allow_html=True,
             )
-
-# Fungsi untuk mengganti foto profil
-def change_profile_pic():
-    st.subheader("Ganti Foto Profil")
-    uploaded_file = st.file_uploader("Pilih file gambar", type=["png", "jpg", "jpeg"])
-    if uploaded_file is not None:
-        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
-        with open(profile_pic_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-        image = Image.open(profile_pic_path)
-        image = image.resize((200, 200))
-        image = image.convert("RGBA")
-        circle_image = Image.new("L", (200, 200), 0)
-        ImageDraw.Draw(circle_image).ellipse((0, 0, 200, 200), fill=255)
-        circular_image = Image.new("RGBA", (200, 200))
-        circular_image.paste(image, (0, 0), mask=circle_image)
-        circular_image.save(profile_pic_path)
-        data[st.session_state['username']]["profile_pic"] = profile_pic_path
-        save_data(data)
-        st.success("Foto profil berhasil diubah!")
 
 # Inisialisasi data
 data = load_data()
@@ -243,8 +197,7 @@ data = load_data()
 # Streamlit: Header dengan latar belakang animasi uang
 st.markdown("""
     <div style="background: linear-gradient(to right, #ff758c, #ff7eb3); padding: 15px; border-radius: 10px;">
-        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</
-                <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
+        <h1 style="color: white; text-align: center;">🌐 Dompet Digital</h1>
     </div>
     <style>
         body {
@@ -263,23 +216,12 @@ st.markdown("""
 if "username" in st.session_state:
     st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
-    # Menampilkan foto profil
-    profile_pic_path = data[st.session_state['username']].get("profile_pic", "")
-    if profile_pic_path and os.path.exists(profile_pic_path):
-        st.sidebar.image(profile_pic_path, caption="Foto Profil", use_column_width=True, output_format="PNG", clamp=True)
-
     # Menu profil dengan pengaturan, bantuan, dan ganti password
     with st.sidebar.expander("🔧 Profil"):
         if st.button("Pengaturan"):
-            st.markdown("### Pengaturan")
-            change_theme()
-            change_profile_pic()
-        with st.expander("Bantuan"):
-            st.write("Silakan pilih opsi berikut jika Anda membutuhkan bantuan:")
-            if st.button("Saran"):
-                st.write("Terima kasih atas saran Anda!")
-            if st.button("Ajukan"):
-                st.write("Silakan ajukan pertanyaan Anda!")
+            st.write("Pengaturan akan ditambahkan nanti.")
+        if st.button("Bantuan"):
+            st.write("Bantuan akan ditambahkan nanti.")
         if st.button("Ganti Password"):
             new_pin = st.text_input("PIN Baru (6 digit)", type="password")
             if st.button("Simpan PIN Baru"):
@@ -290,7 +232,7 @@ if "username" in st.session_state:
                     save_data(data)
                     st.success("PIN berhasil diganti!")
 
-    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Ganti Tema", "Logout"])
     
     if menu == "Tambah Saldo":
         tambah_saldo()
@@ -300,6 +242,8 @@ if "username" in st.session_state:
         cek_saldo()
     elif menu == "Riwayat Transfer":
         cek_riwayat()
+    elif menu == "Ganti Tema":
+        change_theme()
     elif menu == "Logout":
         logout()
 else:
