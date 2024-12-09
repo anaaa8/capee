@@ -1,9 +1,11 @@
 import streamlit as st
 import json
 import os
+from PIL import Image
 
 # File untuk menyimpan data
 DATA_FILE = "dompet_digital.json"
+PROFILE_PICS_DIR = "profile_pics"
 
 # Fungsi untuk memuat data dari file
 def load_data():
@@ -16,6 +18,10 @@ def load_data():
 def save_data(data):
     with open(DATA_FILE, "w") as file:
         json.dump(data, file, indent=4)
+
+# Fungsi untuk membuat direktori foto profil jika belum ada
+if not os.path.exists(PROFILE_PICS_DIR):
+    os.makedirs(PROFILE_PICS_DIR)
 
 # Fungsi untuk format Rupiah
 def format_rupiah(amount):
@@ -32,7 +38,7 @@ def register():
         elif len(pin) != 6 or not pin.isdigit():
             st.error("PIN harus 6 digit angka!")
         else:
-            data[username] = {"pin": pin, "saldo": 0, "riwayat": []}
+            data[username] = {"pin": pin, "saldo": 0, "riwayat": [], "profile_pic": ""}
             save_data(data)
             st.success("Akun berhasil dibuat!")
 
@@ -191,6 +197,18 @@ def change_theme():
                 unsafe_allow_html=True,
             )
 
+# Fungsi untuk mengganti foto profil
+def change_profile_pic():
+    st.subheader("Ganti Foto Profil")
+    uploaded_file = st.file_uploader("Pilih file gambar", type=["png", "jpg", "jpeg"])
+    if uploaded_file is not None:
+        profile_pic_path = os.path.join(PROFILE_PICS_DIR, f"{st.session_state['username']}.png")
+        with open(profile_pic_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        data[st.session_state['username']]["profile_pic"] = profile_pic_path
+        save_data(data)
+        st.success("Foto profil berhasil diubah!")
+
 # Inisialisasi data
 data = load_data()
 
@@ -216,39 +234,48 @@ st.markdown("""
 if "username" in st.session_state:
     st.sidebar.subheader(f"Selamat datang, {st.session_state['username']}!")
 
-    # Menu profil dengan pengaturan, bantuan, dan ganti password
-    with st.sidebar.expander("🔧 Profil"):
-        if st.button("Pengaturan"):
-            st.write("Pengaturan akan ditambahkan nanti.")
-        if st.button("Bantuan"):
-            st.write("Bantuan akan ditambahkan nanti.")
-        if st.button("Ganti Password"):
-            new_pin = st.text_input("PIN Baru (6 digit)", type="password")
-            if st.button("Simpan PIN Baru"):
-                if len(new_pin) != 6 or not new_pin.isdigit():
-                    st.error("PIN harus 6 digit angka!")
-                else:
-                    data[st.session_state['username']]["pin"] = new_pin
-                    save_data(data)
-                    st.success("PIN berhasil diganti!")
-
-    menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Ganti Tema", "Logout"])
+    # Menampilkan foto profil
+    profile_pic_path = data[st.session_state['username']].get("profile_pic", "")
+    if profile_pic_path and os.path.exists(profile_pic_path):
+        st.sidebar.image(profile_pic_path, caption="Foto Profil", use_column_width=True, output_format="PNG", clamp=True)
     
-    if menu == "Tambah Saldo":
-        tambah_saldo()
-    elif menu == "Transfer":
-        transfer()
-    elif menu == "Cek Saldo":
-        cek_saldo()
-    elif menu == "Riwayat Transfer":
-        cek_riwayat()
-    elif menu == "Ganti Tema":
-        change_theme()
-    elif menu == "Logout":
-        logout()
+   # Menu profil dengan pengaturan, bantuan, dan ganti password
+with st.sidebar.expander("🔧 Profil"):
+    if st.button("Pengaturan"):
+        with st.expander("Ganti Tema dan Foto Profil"):
+            change_theme()
+            change_profile_pic()
+    with st.expander("Bantuan"):
+        st.write("Silakan pilih opsi berikut jika Anda membutuhkan bantuan:")
+        if st.button("Saran"):
+            st.write("Terima kasih atas saran Anda!")
+        if st.button("Ajukan"):
+            st.write("Silakan ajukan pertanyaan Anda!")
+    if st.button("Ganti Password"):
+        new_pin = st.text_input("PIN Baru (6 digit)", type="password")
+        if st.button("Simpan PIN Baru"):
+            if len(new_pin) != 6 or not new_pin.isdigit():
+                st.error("PIN harus 6 digit angka!")
+            else:
+                data[st.session_state['username']]["pin"] = new_pin
+                save_data(data)
+                st.success("PIN berhasil diganti!")
+
+menu = st.sidebar.radio("Menu", ["Tambah Saldo", "Transfer", "Cek Saldo", "Riwayat Transfer", "Logout"])
+
+if menu == "Tambah Saldo":
+    tambah_saldo()
+elif menu == "Transfer":
+    transfer()
+elif menu == "Cek Saldo":
+    cek_saldo()
+elif menu == "Riwayat Transfer":
+    cek_riwayat()
+elif menu == "Logout":
+    logout()
 else:
     menu = st.sidebar.radio("Menu", ["Login", "Registrasi"])
-    
+
     if menu == "Login":
         login()
     elif menu == "Registrasi":
